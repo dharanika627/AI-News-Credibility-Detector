@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI News Credibility Analysis System</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+  <nav class="navbar">
+    <div class="nav-brand">📰 NewsCheck AI</div>
+    <div class="nav-links">
+      <a href="#top">Home</a>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#model-info">About</a>
+      <a href="https://github.com/yourusername" target="_blank">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="container" id="top">
+
+    <div class="hero-icon">🤖</div>
+
+    <h1>📰 AI News Credibility Analysis System <span class="version">v1.0</span></h1>
+    <p class="subtitle">
+      Detect whether a news article is likely to be <b>REAL</b> or <b>FAKE</b> using Machine Learning.
+    </p>
+
+    <div class="stats">
+      <div class="card">
+        <h3>🧠 Model</h3>
+        <p>Logistic Regression</p>
+      </div>
+      <div class="card">
+        <h3>📊 Fake Articles</h3>
+        <p>22,449</p>
+      </div>
+      <div class="card">
+        <h3>📊 Real Articles</h3>
+        <p>22,449</p>
+      </div>
+    </div>
+
+    <div class="model-info" id="model-info">
+      <h2>AI Model Information</h2>
+      <div class="info-grid">
+        <div>
+          <h4>🧠 Algorithm</h4>
+          <p>Logistic Regression</p>
+        </div>
+        <div>
+          <h4>⚡ Vectorizer</h4>
+          <p>TF-IDF</p>
+        </div>
+        <div>
+          <h4>🐍 Language</h4>
+          <p>Python</p>
+        </div>
+        <div>
+          <h4>🌐 Framework</h4>
+          <p>Flask</p>
+        </div>
+      </div>
+    </div>
+
+    <form id="predict-form" action="/predict" method="POST">
+
+      <div class="sample-buttons">
+        <button type="button" onclick="clearText()">🗑 Clear</button>
+      </div>
+
+      <textarea
+        name="news"
+        rows="12"
+        placeholder="Paste a news article (headline and/or body) to analyze its writing patterns..."
+        required>{{ news if news else "" }}</textarea>
+
+      <button type="submit" id="analyze-btn">🔍 Analyze News</button>
+
+      <div class="loading-bar" id="loading-bar">
+        <p>🔍 Analyzing...</p>
+        <div class="loading-track"><div class="loading-fill"></div></div>
+      </div>
+
+    </form>
+
+    {% if prediction %}
+    <div class="result-card {{ 'real' if prediction == 'REAL' else 'fake' }}" id="result-card">
+      <span class="badge {{ 'real' if prediction == 'REAL' else 'fake' }}">
+        {{ 'Verified' if prediction == 'REAL' else 'Suspicious' }}
+      </span>
+      <h2>{{ '🟢' if prediction == 'REAL' else '🔴' }} {{ prediction }} NEWS</h2>
+      <p>Confidence: <b>{{ confidence }}%</b></p>
+
+      <div class="confidence-bar-bg">
+        <div class="confidence-bar-fill" data-value="{{ confidence }}"></div>
+      </div>
+
+      <p class="reason">
+        {% if prediction == 'REAL' %}
+          ✔ Writing style resembles authentic news articles.
+        {% else %}
+          ✔ Contains unusual wording and patterns commonly found in fabricated news.
+        {% endif %}
+      </p>
+
+      {% if prediction_time %}
+      <p class="pred-time">Prediction time: {{ prediction_time }} seconds</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="disclaimer">
+      ⚠ This prediction is generated using a machine learning model trained on historical news datasets.
+      It should not be considered a definitive fact-checking service.
+    </div>
+
+    <div class="history-panel">
+      <h2>Prediction History</h2>
+      <ul id="history-list"></ul>
+      <button type="button" class="clear-history" onclick="clearHistory()">Clear History</button>
+    </div>
+
+    <div class="about" id="how-it-works">
+      <h2>How Machine Learning Works</h2>
+      <div class="timeline">
+        <div class="step">1️⃣ User enters article</div>
+        <div class="arrow">↓</div>
+        <div class="step">2️⃣ TF-IDF converts words into numbers</div>
+        <div class="arrow">↓</div>
+        <div class="step">3️⃣ Logistic Regression analyzes patterns</div>
+        <div class="arrow">↓</div>
+        <div class="step">4️⃣ AI predicts Real/Fake</div>
+        <div class="arrow">↓</div>
+        <div class="step">5️⃣ Confidence score displayed</div>
+      </div>
+    </div>
+
+    <div class="features" id="features">
+      <h2>Why Use This?</h2>
+      <ul>
+        <li>✔ Machine Learning</li>
+        <li>✔ Fast Prediction</li>
+        <li>✔ Clear Confidence Score</li>
+        <li>✔ Easy Interface</li>
+      </ul>
+    </div>
+
+    <div class="future">
+      <h2>Future Enhancements</h2>
+      <ul>
+        <li>✔ BERT Transformer</li>
+        <li>✔ Explainable AI</li>
+        <li>✔ Multi-language Detection</li>
+        <li>✔ Live News API</li>
+        <li>✔ User Login</li>
+        <li>✔ Dashboard</li>
+      </ul>
+    </div>
+
+    <footer>
+      <p><b>AI News Credibility Analysis System</b></p>
+      <p>Developed by <b>Dharanika T</b></p>
+      <p>Artificial Intelligence &amp; Data Science</p>
+      <p class="footer-links">
+       
+        <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    // ---------- Ripple effect ----------
+    document.querySelectorAll('button[type="submit"]').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const rect = btn.getBoundingClientRect();
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+        ripple.style.width = ripple.style.height = '20px';
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // ---------- Confidence bar animation ----------
+    window.addEventListener('DOMContentLoaded', () => {
+      const fill = document.querySelector('.confidence-bar-fill');
+      if (fill) {
+        const target = fill.dataset.value || 0;
+        setTimeout(() => { fill.style.width = target + '%'; }, 200);
+      }
+    });
+
+    // ---------- Theme toggle ----------
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      const btn = document.querySelector('.theme-toggle');
+      btn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+    }
+
+    // ---------- Sample buttons ----------
+    function loadReal() {
+      document.querySelector('textarea').value =
+`NASA announced today that scientists successfully tested a new satellite communication system designed to improve global connectivity. Officials confirmed the project met all safety and performance requirements.`;
+    }
+
+    function loadFake() {
+      document.querySelector('textarea').value =
+`Aliens landed yesterday in New York and secretly appointed a talking cat as the President of Earth according to anonymous internet sources.`;
+    }
+
+    function clearText() {
+      document.querySelector('textarea').value = "";
+    }
+
+    // ---------- Loading animation on submit ----------
+    const form = document.getElementById('predict-form');
+    const loadingBar = document.getElementById('loading-bar');
+    const analyzeBtn = document.getElementById('analyze-btn');
+
+    if (form) {
+      form.addEventListener('submit', () => {
+        loadingBar.classList.add('active');
+        analyzeBtn.disabled = true;
+      });
+    }
+
+    // ---------- Prediction history (localStorage) ----------
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+      const data = JSON.parse(localStorage.getItem('predictionHistory') || '[]');
+      list.innerHTML = '';
+      if (data.length === 0) {
+        list.innerHTML = '<li class="empty">No predictions yet</li>';
+        return;
+      }
+      data.slice().reverse().forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.result === 'REAL' ? '🟢' : '🔴'} ${item.result} (${item.confidence}%)`;
+        list.appendChild(li);
+      });
+    }
+
+    function addToHistory(result, confidence) {
+      const data = JSON.parse(localStorage.getItem('predictionHistory') || '[]');
+      data.push({ result, confidence, time: new Date().toISOString() });
+      while (data.length > 20) data.shift();
+      localStorage.setItem('predictionHistory', JSON.stringify(data));
+      renderHistory();
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('predictionHistory');
+      renderHistory();
+    }
+
+    // ---------- Scroll fade-in ----------
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-section').forEach(el => observer.observe(el));
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderHistory();
+      document.querySelectorAll('.model-info, .about, .features, .future, .history-panel').forEach(el => {
+        el.classList.add('fade-section');
+        observer.observe(el);
+      });
+
+      {% if prediction %}
+      addToHistory("{{ prediction }}", "{{ confidence }}");
+      {% endif %}
+    });
+  </script>
+
+</body>
+</html>
