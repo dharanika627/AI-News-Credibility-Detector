@@ -68,11 +68,6 @@ http://127.0.0.1:5000
 
 ---
 
-## 📸 Screenshot
-
-(Add a screenshot here after running the project.)
-
----
 
 ## 👨‍💻 Author
 
